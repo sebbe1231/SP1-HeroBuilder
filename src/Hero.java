@@ -12,29 +12,32 @@ public class Hero {
     private char classType;
     private ArrayList<String> inventory = new ArrayList<String>();
 
+    private int[] warriorClass = new int[10];
+
     public Hero(String name, char classType){
         this.name = name;
         this.hp = 100;
         this.maxHealth = 100;
         this.level = 0;
         this.xp = 0;
-        this.gold = 20;
+        this.gold = 20.0;
         this.isAlive = true;
         this.classType = classType;
         this.inventory.addAll(Arrays.asList("sword", "shield"));
     }
 
-    public void printHeroSheet(){
+
+
+    public void printCharacterSheet(){
         System.out.println("Name: " + name);
-        System.out.println("HP: " + hp);
-        System.out.println("Max Health: " + maxHealth);
+        System.out.println("HP: " + hp + "/" + maxHealth);
         System.out.println("Level: " + level);
         System.out.println("XP: " + xp);
         System.out.println("Gold: " + gold);
         System.out.println("Class: " + classType);
         System.out.println("\n----------------------\n");
         for (int i = 0; i < inventory.size(); i++) {
-            System.out.println(inventory.get(i));
+            System.out.println((i+1) + ": " + inventory.get(i));
         }
     }
 }
