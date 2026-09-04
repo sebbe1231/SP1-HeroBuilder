@@ -22,6 +22,13 @@ SP1 opgave
 - New inventory system
 - Completely redid how item objects are made and function
 
+### Removed
+- Weapon.java
+- Potion.java
+- Armor.java
+
+Removed due to complications, all item objects are now made in Item.java alone.
+
 ### to-do
 - Make code look better
 - Clean up
