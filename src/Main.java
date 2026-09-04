@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -34,23 +33,23 @@ public class Main {
         hero1.printCharacterSheet();
 
         // Creating new enemy
-        // Enemy items in array
-
-        Item[] enemyItems = {new Weapon("Axe", 2, 2)};
-
-        Enemy enemy1 = new Enemy("name", "Ogre", 200, 100,
-                new Item[] {new Weapon("sword", 2, 2)});
+        Enemy enemy1 = new Enemy("John", "Ogre", 200, 100);
+        enemy1.setMainHand(new Item().makeWeapon("Axe", 20, 0, 100, 10));
         enemy1.printEnemySheet();
 
         System.out.println("You see an " + enemy1.getType() + "!");
         System.out.println("Press ENTER to continue...");
         input.nextLine();
-//        while (hero1.getIsAlive() || enemy1.getIsAlive()){
-//            System.out.println("Enemy hit you for " + enemy1.getInventory().get(0));
-//        }
-        System.out.println("Enemy hit you for " + enemy1.getInventory().get(0));
-        for (int i = 0; i < enemy1.getInventory().size(); i++){
-            System.out.println(enemy1.getInventory().get(i).getClass());
+        while (hero1.getIsAlive() && enemy1.getIsAlive()){
+            System.out.println("Enemy hit you for " + enemy1.getMainHand().getDamage());
+            hero1.setHealth(hero1.getHealth()[0] - enemy1.getMainHand().getDamage());
+            System.out.println(hero1.getName() + ": " + hero1.getHealth()[0] + "/" + hero1.getHealth()[1] + " HP");
+            if (hero1.getIsAlive() == false) {
+                System.out.println("The " + enemy1.getType() + " took your head, you have died...");
+            }
+
+            System.out.println("Press ENTER to continue...");
+            input.nextLine();
         }
     }
 }
