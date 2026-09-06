@@ -35,9 +35,14 @@ public class Item {
     }
 
     // Function to make a armor type item
-    public Item makeArmor(String name, int durability, int defence, double value){
+    public Item makeArmor(String name, int durability, int defence, boolean shield, double value){
         this.name = name;
-        this.itemType = "armor";
+        if (shield){
+            this.itemType = "shield";
+        }
+        else {
+            this.itemType = "armor";
+        }
         this.durability = durability;
         this.defence = defence;
         this.value = value;
@@ -56,6 +61,18 @@ public class Item {
         return this;
     }
 
+    public void printItemStats() {
+        System.out.println("====| " + this.name + " |====");
+        System.out.println("Type: " + this.itemType);
+        System.out.println("Damage: " + this.damage);
+        System.out.println("Healing: " +  this.healing);
+        System.out.println("Defence: " + this.defence);
+        System.out.println("Durability: " + this.durability);
+        System.out.println("Value: " + this.value);
+        System.out.println("===============");
+        System.out.println();
+    }
+
     // getName() is inherited by all subclasses
     public String getName() {
         return name;
@@ -63,6 +80,14 @@ public class Item {
 
     public int getDamage() {
         return damage;
+    }
+
+    public int getHealing() {
+        return healing;
+    }
+
+    public String getItemType() {
+        return itemType;
     }
 
 }

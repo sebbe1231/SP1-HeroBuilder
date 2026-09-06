@@ -27,24 +27,6 @@ public class Hero {
 
     private HashMap<String, ArrayList<Item>> inventory = new HashMap<>();
 
-
-    // Making Arrays for starting inventory for different classes using Item objects
-    private Item[] warriorItems = {
-            new Item().makeWeapon("Sword", 20, 0, 10, 15),
-            new Item().makeArmor("Shield", 10, 10, 30),
-            new Item().makeArmor("Heavy Armor", 15, 10, 30)
-    };
-    private Item[] rogueItems = {
-            new Item().makeWeapon("Dagger", 20, 0, 10, 15),
-            new Item().makeWeapon("Dagger", 20, 0, 10, 15),
-            new Item().makeArmor("Light Armor", 10, 5, 20)
-    };
-    private Item[] mageItems = {
-            new Item().makeWeapon("Staff", 15, 25, 10, 50),
-            new Item().makePotion("Health Potion", 25, 1, 20),
-            new Item().makeArmor("Magical Robe", 10, 2, 50)
-    };
-
     // Hero object constructor
     public Hero(String name, char classType){
 
@@ -60,24 +42,61 @@ public class Hero {
 
         // Adding inventory items based on chosen class
         if(classType == 'w') {
-            this.inventory.get("mainHand").add(warriorItems[0]);
-            this.inventory.get("offHand").add(warriorItems[1]);
-            this.inventory.get("armor").add(warriorItems[2]);
+            makeWarrior();
         } else if (classType == 'r') {
-            this.inventory.get("mainHand").add(warriorItems[0]);
-            this.inventory.get("offHand").add(warriorItems[1]);
-            this.inventory.get("armor").add(warriorItems[2]);
+            makeRogue();
         } else if (classType == 'm') {
-            this.inventory.get("mainHand").add(warriorItems[0]);
-            this.inventory.get("potions").add(warriorItems[1]);
-            this.inventory.get("armor").add(warriorItems[2]);
+            makeMage();
         }
-        this.health = 100;
-        this.maxHealth = 100;
         this.level = 0;
         this.xp = 0;
         this.gold = 20.0;
         this.isAlive = true;
+    }
+
+    public void makeWarrior() {
+        this.inventory.get("mainHand").add(
+                new Item().makeWeapon("Sword", 20, 0, 10, 15)
+        );
+        this.inventory.get("offHand").add(
+                new Item().makeArmor("Shield", 10, 10, true, 30)
+        );
+        this.inventory.get("armor").add(
+                new Item().makeArmor("Heavy Armor", 15, 10, false, 30)
+        );
+
+        this.health = 150;
+        this.maxHealth = 150;
+    }
+
+    public void makeRogue() {
+        this.inventory.get("mainHand").add(
+                new Item().makeWeapon("Dagger", 20, 0, 10, 15)
+        );
+        this.inventory.get("offHand").add(
+                new Item().makeWeapon("Dagger", 20, 0, 10, 15)
+        );
+        this.inventory.get("armor").add(
+                new Item().makeArmor("Light Armor", 10, 5, false, 20)
+        );
+
+        this.health = 100;
+        this.maxHealth = 100;
+    }
+
+    public void makeMage() {
+        this.inventory.get("mainHand").add(
+                new Item().makeWeapon("Staff", 15, 25, 10, 50)
+        );
+        this.inventory.get("potions").add(
+                new Item().makePotion("Health Potion", 25, 1, 20)
+        );
+        this.inventory.get("armor").add(
+                new Item().makeArmor("Magical Robe", 10, 2, false, 50)
+        );
+
+        this.health = 80;
+        this.maxHealth = 80;
     }
 
     // Function to print character sheet
@@ -98,6 +117,8 @@ public class Hero {
                 ((inventory.get("mainHand").isEmpty()) ? "" : inventory.get("mainHand").getFirst().getName()));
         System.out.println("Off Hand: " +
                 ((inventory.get("offHand").isEmpty()) ? "" : inventory.get("offHand").getFirst().getName()));
+        System.out.println("Armor: " +
+                ((inventory.get("armor").isEmpty()) ? "" : inventory.get("armor").getFirst().getName()));
         System.out.println("Potions:");
         for (int i = 0; i < inventory.get("potions").size(); i++) {
             System.out.println("    " + i + ":" + inventory.get("potions").get(i).getName());
@@ -106,6 +127,7 @@ public class Hero {
         for (int i = 0; i < inventory.get("other").size(); i++){
             System.out.println("    " + i + ":" + inventory.get("other").get(i).getName());
         }
+        System.out.println();
     }
 
     public HashMap<String, ArrayList<Item>> getInventory() {
@@ -118,8 +140,7 @@ public class Hero {
 
     public int[] getHealth() {
         // I return health as a Health Array, simply to get both values in one call, so i can avoid making a new function
-        int[] healthArray = {health, maxHealth};
-        return healthArray;
+        return new int[] {health, maxHealth};
     }
 
     public int setHealth(int newHealth) {
@@ -134,7 +155,25 @@ public class Hero {
         return name;
     }
 
+    public void takeDamage(int damage) {
+        this.health -= damage;
+        if (this.health <= 0) {
+            this.isAlive = false;
+        }
+    }
+
+    public void heal(int healAmount) {
+        this.health += healAmount;
+        if (this.health > this.maxHealth) {
+            this.health = maxHealth;
+        }
+    }
+
     public Item getMainHand() {
         return inventory.get("mainHand").get(0);
+    }
+
+    public Item getOffHand() {
+        return inventory.get("offHand").get(0);
     }
 }

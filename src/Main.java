@@ -37,19 +37,9 @@ public class Main {
         enemy1.setMainHand(new Item().makeWeapon("Axe", 20, 0, 100, 10));
         enemy1.printEnemySheet();
 
-        System.out.println("You see an " + enemy1.getType() + "!");
-        System.out.println("Press ENTER to continue...");
-        input.nextLine();
-        while (hero1.getIsAlive() && enemy1.getIsAlive()){
-            System.out.println("Enemy hit you for " + enemy1.getMainHand().getDamage());
-            hero1.setHealth(hero1.getHealth()[0] - enemy1.getMainHand().getDamage());
-            System.out.println(hero1.getName() + ": " + hero1.getHealth()[0] + "/" + hero1.getHealth()[1] + " HP");
-            if (hero1.getIsAlive() == false) {
-                System.out.println("The " + enemy1.getType() + " took your head, you have died...");
-            }
+        hero1.getMainHand().printItemStats();
 
-            System.out.println("Press ENTER to continue...");
-            input.nextLine();
-        }
+        // Start battle
+        new Battle(hero1, enemy1).fight();
     }
 }

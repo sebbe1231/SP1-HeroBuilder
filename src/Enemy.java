@@ -54,6 +54,8 @@ public class Enemy {
                 ((inventory.get("mainHand").isEmpty()) ? "" : inventory.get("mainHand").getFirst().getName()));
         System.out.println("Off Hand: " +
                 ((inventory.get("offHand").isEmpty()) ? "" : inventory.get("offHand").getFirst().getName()));
+        System.out.println("Armor: " +
+                ((inventory.get("armor").isEmpty()) ? "" : inventory.get("armor").getFirst().getName()));
         System.out.println("Potions:");
         for (int i = 0; i < inventory.get("potions").size(); i++) {
             System.out.println("    " + i + ":" + inventory.get("potions").get(i).getName());
@@ -90,6 +92,13 @@ public class Enemy {
     public int setHealth(int newHealth) {
         health = newHealth;
         return health;
+    }
+
+    public void takeDamage(int damage) {
+        this.health -= damage;
+        if (this.health <= 0) {
+            this.isAlive = false;
+        }
     }
 
     public Item getMainHand() {
