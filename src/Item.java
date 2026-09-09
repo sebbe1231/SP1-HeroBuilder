@@ -34,7 +34,7 @@ public class Item {
         return this;
     }
 
-    // Function to make a armor type item
+    // Function to make an armor type item
     public Item makeArmor(String name, int durability, int defence, boolean shield, double value){
         this.name = name;
         if (shield){
@@ -61,6 +61,7 @@ public class Item {
         return this;
     }
 
+    // Prints item stats
     public void printItemStats() {
         System.out.println("====| " + this.name + " |====");
         System.out.println("Type: " + this.itemType);
@@ -88,6 +89,10 @@ public class Item {
 
     public String getItemType() {
         return itemType;
+    }
+
+    public int getDefence() {
+        return defence;
     }
 
 }

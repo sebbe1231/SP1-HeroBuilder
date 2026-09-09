@@ -1,7 +1,10 @@
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
+// Class to handle battle mechanics
 public class Battle {
-    // Class to handle battle mechanics
 
     private Hero hero;
     private Enemy enemy;
@@ -14,66 +17,167 @@ public class Battle {
     }
 
     // Function to start fight
-    public void fight() {
-        System.out.println("You see an " + enemy.getType() + "!");
+    public boolean fight() {
+        System.out.println("You see an enemy " + enemy.getType() + "!");
         System.out.println("Press ENTER to continue...");
         input.nextLine();
 
-        // While loop that ends when someone dies
-        while (hero.getIsAlive() && enemy.getIsAlive()){
-            System.out.println("Your turn");
-            String choice = new ChoiceMaker(new String[] {"Main Hand", "Off Hand", "Both", "Heal", "Potion"}).choiceResult();
+        // Print enemy character sheet
+        System.out.println("====| Enemy |====");
+        this.enemy.printEnemySheet();
 
-            switch (choice) {
-                case "Main Hand":
-                    System.out.println("You attack with your main hand for " + hero.getMainHand().getDamage() + " damage");
-                    this.enemy.takeDamage(this.hero.getMainHand().getDamage());
+        System.out.println("Press ENTER to continue...");
+        input.nextLine();
+
+        System.out.println();
+
+        // While loop that ends when someone dies
+        while (true){
+            boolean blocking = false;
+
+            //=========================================
+            //              HERO TURN
+            //=========================================
+            System.out.println("Your turn");
+            System.out.println();
+
+            // Switch for battle choices
+            switch (new ChoiceMaker(new ArrayList<String>(Arrays.asList("Attack", "Block", "Heal", "Potion"))).choiceResult()) {
+                // If choice is 'Attack'
+                case 1:
+                    int damage = 0;
+
+                    // Check if hero has main hand item equipped
+                    if (this.hero.getMainHand() != null && this.hero.getMainHand().getItemType() == "weapon") {
+                        System.out.println("You attack with " + this.hero.getMainHand().getName()
+                                + " for " + this.hero.getMainHand().getDamage() + " damage");
+                        damage += this.hero.getMainHand().getDamage();
+                    }
+
+                    // Check if hero has offhand item equipped
+                    if (this.hero.getOffHand() != null && this.hero.getOffHand().getItemType() == "weapon") {
+                        System.out.println("You attack with " + this.hero.getOffHand().getName()
+                                + " for " + this.hero.getOffHand().getDamage() + " damage");
+                        damage += this.hero.getOffHand().getDamage();
+                    }
+
+                    // Print total damage, and make enemy take damage
+                    System.out.println("You do a total of " + damage + " damage");
+                    this.enemy.takeDamage(damage);
+
                     break;
-                case "Off Hand":
-                    if (this.hero.getOffHand().getItemType() == "shield")
+
+                // If choice is 'Block'
+                case 2:
+                    // Check if hero has Offhand item equipped and that item is a type shield
+                    if (this.hero.getOffHand() != null && this.hero.getOffHand().getItemType() == "shield") {
+
+                        // If it's a shield, make 'blocking' true, else just attack
                         System.out.println("You block");
-                    else if (this.hero.getOffHand().getItemType() == "weapon") {
-                        System.out.println("You attack with your off hand");
+                        blocking = true;
+                    }
+                    else {
+                        System.out.println("You have no shield equipped");
                     }
                     break;
-                case "Both":
-                    System.out.println("You attack with both hands");
+
+                // If choice is 'Heal'
+                case 3:
+                    // Check if 'Main Hand' item is equipped
+                    if (hero.getMainHand() != null) {
+                        System.out.println("You heal for " + this.hero.getMainHand().getHealing() + " HP");
+                        this.hero.heal(this.hero.getMainHand().getHealing());
+                    }
+                    else {
+                        System.out.println("You have no main hand item equipped");
+                    }
                     break;
-                case "Heal":
-                    System.out.println("You heal for " + this.hero.getMainHand().getHealing() + " HP");
-                    this.hero.heal(this.hero.getMainHand().getHealing());
-                    break;
-                case "Potion":
-                    System.out.println("You take a potion");
+
+                // If choice is 'Potion'
+                case 4:
+                    if (!this.hero.getPotions().isEmpty()) {
+                        ArrayList<String> potionChoices = new ArrayList<>();
+                        for (Item potion : this.hero.getPotions()) {
+                            potionChoices.add(potion.getName());
+                        }
+                        System.out.println("Choose a potion:");
+                        Item potion = this.hero.getPotion(new ChoiceMaker(potionChoices).choiceResult() - 1);
+                        System.out.println("You chose: " + potion.getName());
+                        System.out.println("You heal for " + potion.getHealing() + " HP");
+                        hero.heal(potion.getHealing());
+                    }
+                    else {
+                        System.out.println("You have no potions...");
+                    }
                     break;
             }
 
             System.out.println();
 
+            // Print hero and enemy HP
             System.out.println(this.hero.getName() + " HP: " + this.hero.getHealth()[0] + "/" + this.hero.getHealth()[1]);
             System.out.println(this.enemy.getType() + " HP: " + this.enemy.getHealth()[0] + "/" + this.enemy.getHealth()[1]);
 
             System.out.println();
 
+
+            // Check if enemy is dead, if so, print 'You won!' and return
             if (!enemy.getIsAlive()) {
                 System.out.println("You won!");
-                return;
+                System.out.println("For slaying " + this.enemy.getType() + " you got:");
+
+                // Print enemy gold and add that to hero gold
+                System.out.println(this.enemy.getGold() + " gold");
+                this.hero.setGold(this.enemy.getGold());
+
+                // Print XP won and add it to hero XP
+                System.out.println("1000 XP");
+                this.hero.setXP(1000);
+
+
+                // Add winnings array to hero inventory in "other" key
+                this.hero.addInventoryOther(this.enemy.getInventoryArray());
+                System.out.println("Press ENTER to continue...");
+                input.nextLine();
+                return true;
             }
 
+
+            //======================================
+            //              ENEMY TURN
+            //======================================
             System.out.println(enemy.getType() + "'s turn");
             System.out.println("Press ENTER to continue...");
             input.nextLine();
 
-            System.out.println("Enemy hit you for " + enemy.getMainHand().getDamage());
-            hero.takeDamage(this.enemy.getMainHand().getDamage());
+            // If hero is blocking
+            if (blocking) {
+                System.out.println("You blocked");
+            }
+
+            // Hero takes damage, and if hero is blocking takes less damage
+            System.out.println("Enemy hit you for " +
+                    hero.takeDamage(this.enemy.getMainHand().getDamage(), blocking));
             System.out.println();
 
+            // Print hero and enemy HP
             System.out.println(this.hero.getName() + " HP: " + this.hero.getHealth()[0] + "/" + this.hero.getHealth()[1]);
             System.out.println(this.enemy.getType() + " HP: " + this.enemy.getHealth()[0] + "/" + this.enemy.getHealth()[1]);
 
+            // Check is hero is alive
             if (!hero.getIsAlive()) {
                 System.out.println("The " + enemy.getType() + " took your head, you have died...");
-                return;
+                 return false;
+            }
+
+            double healthPercent = (double) hero.getHealth()[0] / (double) this.hero.getHealth()[1] * 100;
+
+            if (healthPercent <= 25){
+                System.out.println();
+                System.out.println("|=========================|");
+                System.out.println("|         WARNING!        |");
+                System.out.println("| You have " + new DecimalFormat("0.00").format(healthPercent) + "% HP left! |");
+                System.out.println("|=========================|");
             }
 
             System.out.println("Press ENTER to continue...");

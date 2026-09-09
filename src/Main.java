@@ -2,13 +2,13 @@ import java.util.Scanner;
 
 public class Main {
     void main(){
-
         // User input to create hero
         Scanner input = new Scanner(System.in);
 
         System.out.println("Hello hero!\nWhat is thy name?");
         String name = input.nextLine();
         System.out.println("Good to meet you " + name + "!");
+        System.out.println();
         System.out.println("What is thy profession?\n(W)arrior\n(R)ogue\n(M)age");
         char classType = input.nextLine().toLowerCase().charAt(0);
 
@@ -27,19 +27,22 @@ public class Main {
             System.out.println("I am yet to hear of such profession");
             return;
         }
+        System.out.println();
 
         // Making the hero
         Hero hero1 = new Hero(name, classType);
         hero1.printCharacterSheet();
 
         // Creating new enemy
-        Enemy enemy1 = new Enemy("John", "Ogre", 200, 100);
+        Enemy enemy1 = new Enemy("John", "Ogre", 50, 100);
         enemy1.setMainHand(new Item().makeWeapon("Axe", 20, 0, 100, 10));
-        enemy1.printEnemySheet();
-
-        hero1.getMainHand().printItemStats();
 
         // Start battle
-        new Battle(hero1, enemy1).fight();
+        // If returns false (Hero died) end program
+        if(!new Battle(hero1, enemy1).fight()){
+            return;
+        }
+
+        hero1.printCharacterSheet();
     }
 }

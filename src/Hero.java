@@ -12,6 +12,8 @@ public class Hero {
     private boolean isAlive;
     private char classType;
 
+    private Scanner input = new Scanner(System.in);
+
     // I'm thinking inventory can be a HashMap, and then I can go with the structure:
     /*
     {
@@ -22,7 +24,7 @@ public class Hero {
     "other": {Item1, Item2, ...} For items not in use
     }
      */
-    // This will make battle mechanics easier, since i don't have to cycle through an Array
+    // This will make battle mechanics easier, since I don't have to cycle through an Array
     // HashMap values are a set value, so everything has to go in an Array, however this won't be a problem
 
     private HashMap<String, ArrayList<Item>> inventory = new HashMap<>();
@@ -121,12 +123,13 @@ public class Hero {
                 ((inventory.get("armor").isEmpty()) ? "" : inventory.get("armor").getFirst().getName()));
         System.out.println("Potions:");
         for (int i = 0; i < inventory.get("potions").size(); i++) {
-            System.out.println("    " + i + ":" + inventory.get("potions").get(i).getName());
+            System.out.println("    " + (i+1) + ":" + inventory.get("potions").get(i).getName());
         }
         System.out.println("Other:");
         for (int i = 0; i < inventory.get("other").size(); i++){
-            System.out.println("    " + i + ":" + inventory.get("other").get(i).getName());
+            System.out.println("    " + (i+1) + ":" + inventory.get("other").get(i).getName());
         }
+        System.out.println("----| " + this.getInventoryArray().size() + " total items |----");
         System.out.println();
     }
 
@@ -134,12 +137,30 @@ public class Hero {
         return inventory;
     }
 
+    public ArrayList<Item> getInventoryArray() {
+        // Make array object for the inventory items
+        ArrayList<Item> inventoryArray = new ArrayList<>();
+
+        // For each loop, going through inventory keys (It's a HashMap)
+        for (String key: this.inventory.keySet()) {
+
+            // For each key, run a for loop to go through every item in that key
+            for (int i = 0; i < this.inventory.get(key).size(); i++){
+
+                // Add those items to inventory array
+                inventoryArray.add(this.inventory.get(key).get(i));
+            }
+        }
+
+        return inventoryArray;
+    }
+
     public boolean getIsAlive() {
         return isAlive;
     }
 
     public int[] getHealth() {
-        // I return health as a Health Array, simply to get both values in one call, so i can avoid making a new function
+        // I return health as a Health Array, simply to get both values in one call, so I can avoid making a new function
         return new int[] {health, maxHealth};
     }
 
@@ -155,13 +176,32 @@ public class Hero {
         return name;
     }
 
-    public void takeDamage(int damage) {
-        this.health -= damage;
+    // Make hero take damage
+    public int takeDamage(int damage, boolean blocking) {
+
+        // If hero is blocking, take damage equal to damage - defense
+        if (blocking) {
+            // Only take damage if damage is bigger than 0
+            if (damage - this.getOffHand().getDefence() > 0){
+
+                // Make damage equal to damage - defense
+                damage -= this.getOffHand().getDefence();
+                this.health -= damage;
+            }
+        }
+        else {
+            this.health -= damage;
+        }
+
         if (this.health <= 0) {
             this.isAlive = false;
         }
+
+        // Return damage
+        return damage;
     }
 
+    // Heal hero, if health ends up being over maxHealth, make health = maxHealth
     public void heal(int healAmount) {
         this.health += healAmount;
         if (this.health > this.maxHealth) {
@@ -169,11 +209,57 @@ public class Hero {
         }
     }
 
+    // Get main hand item, if no item equipped, return null
     public Item getMainHand() {
-        return inventory.get("mainHand").get(0);
+        if (!inventory.get("mainHand").isEmpty()) {
+            return inventory.get("mainHand").getFirst();
+        }
+        else {
+            return null;
+        }
     }
 
+    // Get offhand item, if no item equipped, return null
     public Item getOffHand() {
-        return inventory.get("offHand").get(0);
+        if (!inventory.get("offHand").isEmpty()) {
+            return inventory.get("offHand").getFirst();
+        }
+        else {
+            return null;
+        }
+    }
+
+    public ArrayList<Item> getPotions() {
+        return this.inventory.get("potions");
+    }
+
+    public Item getPotion(int index) {
+        return this.inventory.get("potions").get(index);
+    }
+
+    public void setGold(double gold) {
+        this.gold += gold;
+    }
+
+    public void setXP(int xp) {
+        this.xp += xp;
+        if (this.xp >= 1000) {
+            this.levelUp();
+        }
+    }
+
+    public void addInventoryOther(ArrayList<Item> items) {
+        this.inventory.get("other").addAll(items);
+    }
+
+    public void levelUp () {
+        if (this.xp >= 1000) {
+            System.out.println("You're ready to level up!");
+            System.out.println("Press ENTER to level up...");
+            input.nextLine();
+            System.out.println("You leveled up!");
+            System.out.println("Level " + this.level + " -> " + (this.level + 1));
+            this.level++;
+        }
     }
 }

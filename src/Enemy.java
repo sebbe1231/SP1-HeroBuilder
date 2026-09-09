@@ -42,10 +42,12 @@ public class Enemy {
     }
 
     public void printEnemySheet() {
-        System.out.println("Name: " + name);
-        System.out.println("Health: " + health + "/" + maxHealth);
-        System.out.println("Gold: " + gold);
+        System.out.println("Name: " + this.name);
+        System.out.println("Type: " + this.type);
+        System.out.println("Health: " + this.health + "/" + this.maxHealth);
+        System.out.println("Gold: " + this.gold);
         System.out.println("\n-----------------------------\n");
+
         // One line IF statement '((inventory.get("mainHand").isEmpty()) ? "" : inventory.get("mainHand").getFirst().getName())'
         // This line goes (condition) ? ifExpressionIsTrue : ifExpressionIsFalse
         // In this case I'm asking if the enemy has an mainHand/offHand item, if isEmpty() is true, i simply print nothing
@@ -80,13 +82,34 @@ public class Enemy {
         return inventory;
     }
 
+    public ArrayList<Item> getInventoryArray() {
+        // Make array object for the inventory items
+        ArrayList<Item> inventoryArray = new ArrayList<>();
+
+        // For each loop, going through inventory keys (It's a HashMap)
+        for (String key: this.inventory.keySet()) {
+
+            // For each key, run a for loop to go through every item in that key
+            for (int i = 0; i < this.inventory.get(key).size(); i++){
+
+                // Add those items to inventory array
+                inventoryArray.add(this.inventory.get(key).get(i));
+            }
+        }
+
+        return inventoryArray;
+    }
+
     public boolean getIsAlive() {
         return isAlive;
     }
 
     public int[] getHealth() {
-        int[] healthArray = {health, maxHealth};
-        return healthArray;
+        return new int[] {health, maxHealth};
+    }
+
+    public double getGold() {
+        return this.gold;
     }
 
     public int setHealth(int newHealth) {
@@ -101,7 +124,13 @@ public class Enemy {
         }
     }
 
+    // Get enemy main hand, if main hand not equipped, return null
     public Item getMainHand() {
-        return inventory.get("mainHand").get(0);
+        if (!inventory.get("mainHand").isEmpty()) {
+            return inventory.get("mainHand").getFirst();
+        }
+        else {
+            return null;
+        }
     }
 }
