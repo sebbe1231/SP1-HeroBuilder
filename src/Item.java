@@ -13,8 +13,8 @@ public class Item {
 
     // Item constructor
     public Item() {
-        this.name = "Nan";
-        this.itemType = "Nan";
+        this.name = null;
+        this.itemType = null;
         this.damage = 0;
         this.healing = 0;
         this.durability = 0;
