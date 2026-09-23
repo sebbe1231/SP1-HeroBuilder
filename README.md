@@ -97,3 +97,10 @@ Enemy items (Loot) gets added to hero "other" key in inventory HashMap if hero w
 
 ### Added
 - inventory.java class, hero class extends this class
+- entity.java, this class is a parent class for Hero and Enemy
+- Cleaned up a bit of code
+
+### to-do
+- I wanna add a different events that can happen, and have them happen at random
+- I wanna add a choice to do things with your inventory
+- Add actual functionality to level up

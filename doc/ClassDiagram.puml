@@ -4,24 +4,33 @@ class Main {
 }
 
 class Enemy {
+}
+class Entity {
 - String name
-- String type
 - int health
 - int maxHealth
 - double gold
 - boolean isAlive
-- HashMap<String,ArrayList<Item>> inventory
-+ void printEnemySheet()
+- int level
+- int xp
+- String type
+- char classType
+- Inventory inventory
+- Scanner input
++ String getName()
 + String getType()
-+ void setMainHand(Item)
-+ HashMap<String,ArrayList<Item>> getInventory()
-+ ArrayList<Item> getInventoryArray()
++ void setMaxHealth(int)
++ Inventory getInventory()
 + boolean getIsAlive()
 + int[] getHealth()
-+ double getGold()
 + int setHealth(int)
-+ void takeDamage(int)
-+ Item getMainHand()
++ double getGold()
++ void setGold(double)
++ int takeDamage(int,boolean)
++ void heal(int)
++ void setXP(int)
++ void levelUp()
++ void printCharacterSheet()
 }
 
 
@@ -53,30 +62,10 @@ class ChoiceMaker {
 
 
 class Hero {
-- String name
-- int health
-- int maxHealth
-- int level
-- int xp
-- double gold
-- boolean isAlive
-- char classType
-- Scanner input
 + void makeWarrior()
 + void makeRogue()
 + void makeMage()
-+ void printCharacterSheet()
-+ boolean getIsAlive()
-+ int[] getHealth()
-+ int setHealth(int)
-+ String getName()
-+ int takeDamage(int,boolean)
-+ void heal(int)
-+ void setGold(double)
-+ void setXP(int)
-+ void levelUp()
 }
-
 
 class Battle {
 - Hero hero
@@ -92,13 +81,13 @@ class Inventory {
 + void makeWarriorInv()
 + void makeRogueInv()
 + void makeMageInv()
-+ Inventory getInventory()
 + void printInventory()
 + Item getMainHand()
 + Item getOffHand()
 + ArrayList<Item> getPotions()
 + Item getPotion(int)
-+ void setInventory(ArrayList<Item>,String)
++ void setInventory(Item,String)
++ void equipItem()
 + void addPotions(ArrayList<Item>)
 + void addOther(ArrayList<Item>)
 + ArrayList<Item> getInventoryArray()
@@ -107,6 +96,9 @@ class Inventory {
 
 
 
-Inventory <|-- Hero
-Inventory --> Item
+Entity <|-- Enemy
+Entity <|-- Hero
+Entity <-- Inventory
+Inventory <-- Item
+Battle <-- Entity
 @enduml

@@ -24,7 +24,7 @@ public class Battle {
 
         // Print enemy character sheet
         System.out.println("====| Enemy |====");
-        this.enemy.printEnemySheet();
+        this.enemy.printCharacterSheet();
 
         System.out.println("Press ENTER to continue...");
         input.nextLine();
@@ -63,7 +63,7 @@ public class Battle {
 
                     // Print total damage, and make enemy take damage
                     System.out.println("You do a total of " + damage + " damage");
-                    this.enemy.takeDamage(damage);
+                    this.enemy.takeDamage(damage, false);
 
                     break;
 
