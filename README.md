@@ -92,3 +92,8 @@ The hero gets 4 choices as of right now Attack, Block, Heal and Potion. Durabili
 The enemy simply only attacks for now.
 
 Enemy items (Loot) gets added to hero "other" key in inventory HashMap if hero wins, as well as gold and XP gets added to hero.
+
+## Iteration 3
+
+### Added
+- inventory.java class, hero class extends this class

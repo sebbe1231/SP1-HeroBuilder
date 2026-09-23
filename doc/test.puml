@@ -1,0 +1,112 @@
+@startuml
+class Main {
+~ void main()
+}
+
+class Enemy {
+- String name
+- String type
+- int health
+- int maxHealth
+- double gold
+- boolean isAlive
+- HashMap<String,ArrayList<Item>> inventory
++ void printEnemySheet()
++ String getType()
++ void setMainHand(Item)
++ HashMap<String,ArrayList<Item>> getInventory()
++ ArrayList<Item> getInventoryArray()
++ boolean getIsAlive()
++ int[] getHealth()
++ double getGold()
++ int setHealth(int)
++ void takeDamage(int)
++ Item getMainHand()
+}
+
+
+class Item {
+- String name
+- String itemType
+- int damage
+- int healing
+- int durability
+- int defence
+- double value
++ Item makeWeapon(String,int,int,int,double)
++ Item makeArmor(String,int,int,boolean,double)
++ Item makePotion(String,int,int,double)
++ void printItemStats()
++ String getName()
++ int getDamage()
++ int getHealing()
++ String getItemType()
++ int getDefence()
+}
+
+
+class ChoiceMaker {
+- ArrayList<String> choices
+- Scanner input
++ int choiceResult()
+}
+
+
+class Hero {
+- String name
+- int health
+- int maxHealth
+- int level
+- int xp
+- double gold
+- boolean isAlive
+- char classType
+- Scanner input
++ void makeWarrior()
++ void makeRogue()
++ void makeMage()
++ void printCharacterSheet()
++ boolean getIsAlive()
++ int[] getHealth()
++ int setHealth(int)
++ String getName()
++ int takeDamage(int,boolean)
++ void heal(int)
++ void setGold(double)
++ void setXP(int)
++ void levelUp()
+}
+
+
+class Battle {
+- Hero hero
+- Enemy enemy
+- Scanner input
++ boolean fight()
+}
+
+
+class Inventory {
+- HashMap<String,ArrayList<Item>> inventory
+~ Scanner input
++ void makeWarriorInv()
++ void makeRogueInv()
++ void makeMageInv()
++ Inventory getInventory()
++ void printInventory()
++ Item getMainHand()
++ Item getOffHand()
++ ArrayList<Item> getPotions()
++ Item getPotion(int)
++ void setInventory(ArrayList<Item>,String)
++ void addPotions(ArrayList<Item>)
++ void addOther(ArrayList<Item>)
++ ArrayList<Item> getInventoryArray()
+}
+
+
+
+
+Inventory <|-- Hero
+Inventory --> Item
+@enduml

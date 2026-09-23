@@ -48,17 +48,17 @@ public class Battle {
                     int damage = 0;
 
                     // Check if hero has main hand item equipped
-                    if (this.hero.getMainHand() != null && this.hero.getMainHand().getItemType() == "weapon") {
-                        System.out.println("You attack with " + this.hero.getMainHand().getName()
-                                + " for " + this.hero.getMainHand().getDamage() + " damage");
-                        damage += this.hero.getMainHand().getDamage();
+                    if (this.hero.getInventory().getMainHand() != null && this.hero.getInventory().getMainHand().getItemType() == "weapon") {
+                        System.out.println("You attack with " + this.hero.getInventory().getMainHand().getName()
+                                + " for " + this.hero.getInventory().getMainHand().getDamage() + " damage");
+                        damage += this.hero.getInventory().getMainHand().getDamage();
                     }
 
                     // Check if hero has offhand item equipped
-                    if (this.hero.getOffHand() != null && this.hero.getOffHand().getItemType() == "weapon") {
-                        System.out.println("You attack with " + this.hero.getOffHand().getName()
-                                + " for " + this.hero.getOffHand().getDamage() + " damage");
-                        damage += this.hero.getOffHand().getDamage();
+                    if (this.hero.getInventory().getOffHand() != null && this.hero.getInventory().getOffHand().getItemType() == "weapon") {
+                        System.out.println("You attack with " + this.hero.getInventory().getOffHand().getName()
+                                + " for " + this.hero.getInventory().getOffHand().getDamage() + " damage");
+                        damage += this.hero.getInventory().getOffHand().getDamage();
                     }
 
                     // Print total damage, and make enemy take damage
@@ -70,7 +70,7 @@ public class Battle {
                 // If choice is 'Block'
                 case 2:
                     // Check if hero has Offhand item equipped and that item is a type shield
-                    if (this.hero.getOffHand() != null && this.hero.getOffHand().getItemType() == "shield") {
+                    if (this.hero.getInventory().getOffHand() != null && this.hero.getInventory().getOffHand().getItemType() == "shield") {
 
                         // If it's a shield, make 'blocking' true, else just attack
                         System.out.println("You block");
@@ -84,9 +84,9 @@ public class Battle {
                 // If choice is 'Heal'
                 case 3:
                     // Check if 'Main Hand' item is equipped
-                    if (hero.getMainHand() != null) {
-                        System.out.println("You heal for " + this.hero.getMainHand().getHealing() + " HP");
-                        this.hero.heal(this.hero.getMainHand().getHealing());
+                    if (hero.getInventory().getMainHand() != null) {
+                        System.out.println("You heal for " + this.hero.getInventory().getMainHand().getHealing() + " HP");
+                        this.hero.heal(this.hero.getInventory().getMainHand().getHealing());
                     }
                     else {
                         System.out.println("You have no main hand item equipped");
@@ -95,13 +95,13 @@ public class Battle {
 
                 // If choice is 'Potion'
                 case 4:
-                    if (!this.hero.getPotions().isEmpty()) {
+                    if (!this.hero.getInventory().getPotions().isEmpty()) {
                         ArrayList<String> potionChoices = new ArrayList<>();
-                        for (Item potion : this.hero.getPotions()) {
+                        for (Item potion : this.hero.getInventory().getPotions()) {
                             potionChoices.add(potion.getName());
                         }
                         System.out.println("Choose a potion:");
-                        Item potion = this.hero.getPotion(new ChoiceMaker(potionChoices).choiceResult() - 1);
+                        Item potion = this.hero.getInventory().getPotion(new ChoiceMaker(potionChoices).choiceResult() - 1);
                         System.out.println("You chose: " + potion.getName());
                         System.out.println("You heal for " + potion.getHealing() + " HP");
                         hero.heal(potion.getHealing());
@@ -136,7 +136,7 @@ public class Battle {
 
 
                 // Add winnings array to hero inventory in "other" key
-                this.hero.addInventoryOther(this.enemy.getInventoryArray());
+                this.hero.getInventory().addOther(this.enemy.getInventory().getInventoryArray());
                 System.out.println("Press ENTER to continue...");
                 input.nextLine();
                 return true;
@@ -157,7 +157,7 @@ public class Battle {
 
             // Hero takes damage, and if hero is blocking takes less damage
             System.out.println("Enemy hit you for " +
-                    hero.takeDamage(this.enemy.getMainHand().getDamage(), blocking));
+                    hero.takeDamage(this.enemy.getInventory().getMainHand().getDamage(), blocking));
             System.out.println();
 
             // Print hero and enemy HP

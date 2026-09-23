@@ -35,7 +35,7 @@ public class Main {
 
         // Creating new enemy
         Enemy enemy1 = new Enemy("John", "Ogre", 50, 100);
-        enemy1.setMainHand(new Item().makeWeapon("Axe", 20, 0, 100, 10));
+        enemy1.getInventory().setInventory(new Item().makeWeapon("Axe", 20, 0, 100, 10), "mainHand");
 
         // Start battle
         // If returns false (Hero died) end program

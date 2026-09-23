@@ -3,16 +3,67 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class Inventory {
+
+// I'm thinking inventory can be a HashMap, and then I can go with the structure:
+    /*
+    {
+    "mainHand": {Item},
+    "offHand": {Item},
+    "potions": {Potion1, Potion2, ...},
+    "Armor": {Armor},
+    "other": {Item1, Item2, ...} For items not in use
+    }
+     */
+// This will make battle mechanics easier, since I don't have to cycle through an Array
+// HashMap values are a set value, so everything has to go in an Array, however this won't be a problem
+
+public class Inventory{
     private HashMap<String, ArrayList<Item>> inventory = new HashMap<>();
     Scanner input = new Scanner(System.in);
 
-    public Inventory (Item[] mainHand, Item[] offHand, Item[] potions, Item[] armor, Item[] other) {
-        this.inventory.put("mainHand", new ArrayList<Item> (Arrays.asList(mainHand)));
-        this.inventory.put("offHand", new ArrayList<Item> (Arrays.asList(offHand)));
-        this.inventory.put("potions", new ArrayList<Item> (Arrays.asList(potions)));
-        this.inventory.put("armor", new ArrayList<Item> (Arrays.asList(armor)));
-        this.inventory.put("other", new ArrayList<Item> (Arrays.asList(other)));
+    public Inventory () {
+        // Adding inventory HashMap keys, making the HashMap "tree" in a way
+        this.inventory.put("mainHand", new ArrayList<Item> ());
+        this.inventory.put("offHand", new ArrayList<Item> ());
+        this.inventory.put("potions", new ArrayList<Item> ());
+        this.inventory.put("armor", new ArrayList<Item> ());
+        this.inventory.put("other", new ArrayList<Item> ());
+    }
+
+    public void makeWarriorInv() {
+        this.inventory.get("mainHand").add(
+                new Item().makeWeapon("Sword", 20, 0, 10, 15)
+        );
+        this.inventory.get("offHand").add(
+                new Item().makeArmor("Shield", 10, 10, true, 30)
+        );
+        this.inventory.get("armor").add(
+                new Item().makeArmor("Heavy Armor", 15, 10, false, 30)
+        );
+    }
+
+    public void makeRogueInv() {
+        this.inventory.get("mainHand").add(
+                new Item().makeWeapon("Dagger", 20, 0, 10, 15)
+        );
+        this.inventory.get("offHand").add(
+                new Item().makeWeapon("Dagger", 20, 0, 10, 15)
+        );
+        this.inventory.get("armor").add(
+                new Item().makeArmor("Light Armor", 10, 5, false, 20)
+        );
+    }
+
+    public void makeMageInv() {
+        this.inventory.get("mainHand").add(
+                new Item().makeWeapon("Staff", 15, 25, 10, 50)
+        );
+        this.inventory.get("potions").add(
+                new Item().makePotion("Health Potion", 25, 1, 20)
+        );
+        this.inventory.get("armor").add(
+                new Item().makeArmor("Magical Robe", 10, 2, false, 50)
+        );
     }
 
     public void printInventory() {
@@ -68,26 +119,61 @@ public class Inventory {
 
     // setInventory sets either mainHand, offHand or armor
     // inventoryType argument must be either mainHand, offHand or armor
-    public void setInventory(ArrayList<Item> items, String inventoryType) {
-        System.out.println("What Item from your inventory would you like to equip in your main hand?");
+    public void setInventory(Item item, String inventoryType) {
 
-        // Making temp list for all items in Other key of inventory
-        ArrayList<String> inventoryOther = new ArrayList<>();
-
-        for (Item item : this.inventory.get("other")) {
-            inventoryOther.add(item.getName());
-        }
-
-        System.out.println("==========| Items |==========");
-        int choice = new ChoiceMaker(inventoryOther).choiceResult();
-
+        // If there's already an item equipped in slot, remove item before adding new item
         if(!inventory.get(inventoryType).isEmpty()) {
             this.addOther(this.inventory.get(inventoryType));
             this.inventory.get(inventoryType).clear();
         }
 
-        this.inventory.get(inventoryType).addAll(items);
-        this.inventory.get("other").remove(choice-1);
+        // Add item to slot
+        this.inventory.get(inventoryType).add(item);
+    }
+
+    public void equipItem() {
+        System.out.println("What hand would you like to modify?");
+        int slotChoice = new ChoiceMaker(new ArrayList<String>(Arrays.asList("Main Hand", "Off Hand", "Armor"))).choiceResult();
+
+        String slot = "";
+
+        switch (slotChoice) {
+            case 1:
+                slot = "mainHand";
+                break;
+            case 2:
+                slot = "offHand";
+                break;
+            case 3:
+                slot = "armor";
+                break;
+        }
+
+        // Making temp list for all items in Other key of inventory
+        ArrayList<String> inventoryOther = new ArrayList<>();
+
+        // Add all items in "other" key to array
+        for (Item otherItem : this.inventory.get("other")) {
+            inventoryOther.add(otherItem.getName());
+        }
+
+        System.out.println("What item would you like to equip?");
+
+        // Print choices to add to inventory
+        System.out.println("==========| Items |==========");
+        int itemChoice = new ChoiceMaker(inventoryOther).choiceResult();
+
+        Item item = this.inventory.get("other").get(itemChoice-1);
+
+        // If there's already an item equipped in slot, remove item before adding new item
+        if(!inventory.get(slot).isEmpty()) {
+            this.addOther(this.inventory.get(slot));
+            this.inventory.get(slot).clear();
+        }
+
+        // Add item to slot and remove item from "other" key
+        this.inventory.get(slot).add(item);
+        this.inventory.get("other").remove(itemChoice-1);
     }
 
     public void addPotions(ArrayList<Item> items) {
@@ -97,7 +183,6 @@ public class Inventory {
     public void addOther(ArrayList<Item> items) {
         this.inventory.get("other").addAll(items);
     }
-
 
     public ArrayList<Item> getInventoryArray() {
         // Make array object for the inventory items
